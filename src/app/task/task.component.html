@@ -1,0 +1,104 @@
+<div class="task">
+  <div class="addtask">
+    <h1>New Task</h1>
+    <div class="inputtask">
+      <input [(ngModel)]="inputTaskValue" type="text" placeholder="Add new task..." />
+    </div>
+    <div class="description">
+      <h3>Description</h3>
+      <textarea [(ngModel)]="desValue" cols="60" rows="10" placeholder="Add description..."></textarea>
+    </div>
+
+    <div class="date_and_priority">
+      <div class="date">
+     <h3>Due date</h3>
+        <input [(ngModel)]="dateValue" class="option" type="date" />
+      </div>
+  <div class="piority">
+        <h3>Priority</h3>
+        <select class="option" [(ngModel)]="DefaultPriority">
+          <option *ngFor="let option of priorityOptions" [value]="option">         
+            {{ option }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="message">{{ message$ | async }}</div>
+    <button (click)="addTask()" class="add_btn">Add</button>
+  </div>
+
+  <div class="todolist">
+    <div class="list">
+
+          <h1>Todo List</h1>
+
+    <input [(ngModel)]="search" (ngModelChange)="searchTask()" type="text" placeholder="Search..." />
+
+
+
+
+
+   <div
+
+   *ngFor="let item of tasks$ | async; let i = index " class="tasklist">
+
+   <div ngf="" class="div">
+     <div   class="task_item">
+        <div class="taskInfo">
+    <div class="task_name">
+            <input class="checkboxInput  checked" (click)="toggleCheck(i)" type="checkbox" />
+            <p>{{ item.task }}</p>
+    </div>
+          <div class="taskDetails">
+            <div class="itemBtn">
+           <button (click)="openDetail(i)" class="doneBtn">Detail</button>
+              <button class="removeBtn" (click)="removeTask(i)">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="(openedItemId$ | async) === item.id.toString()" class="detailOpen">
+        <div class="detail" *ngIf="selectedTask$ | async as selectedTask">
+            <input type="text" [(ngModel)]="selectedTask.task" class="taskName" />
+            <p>Description:</p>
+            <textarea class="taskDescription" [(ngModel)]="selectedTask.description"></textarea>
+
+            <div class="date_and_priority">
+              <div class="date">
+             <h3 class="taskDate">Due date:</h3>
+                <input type="date" class="option" [(ngModel)]="selectedTask.date" />
+              </div>
+
+              <div class="priority">
+                <h3 class="taskPriority">Priority:</h3>
+                <select class="option" [(ngModel)]="selectedTask.priority">
+                  <option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="updateBtn" (click)="saveTask()">Update</button>
+        <div class="updateMessage">{{updateMessage$|async}}</div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    </div>
+    </div>
+  
+
+
+    <div *ngIf="checked$.value.length>0" class="bulk-actions">
+
+    <p>Bulk Action: {{checked$.value.length}}</p>
+
+<div class="itemBtn">
+    <button (click)="doneBtn()" class="doneBtn">Done</button>
+  <button (click)="remove()" class="removeBtn" >Remove</button></div>
+    
+</div>
+  </div>
+</div>

@@ -40,13 +40,16 @@
 
    <div
 
-   *ngFor="let item of tasks$ | async; let i = index " class="tasklist">
+   *ngFor="let item of List$| async; let i = index" class="tasklist">
 
-   <div ngf="" class="div">
-     <div   class="task_item">
-        <div class="taskInfo">
+
+     <div      [ngClass]="{
+       'done-task': item.done,
+       'overdue-task':item.past && !item.done
+     }"  class="task_item">
+        <div class="taskInfo"  >
     <div class="task_name">
-            <input class="checkboxInput  checked" (click)="toggleCheck(i)" type="checkbox" />
+            <input class="checkboxInput  checked"  (click)="toggleCheck(i)" type="checkbox" />
             <p>{{ item.task }}</p>
     </div>
           <div class="taskDetails">
@@ -72,7 +75,7 @@
               <div class="priority">
                 <h3 class="taskPriority">Priority:</h3>
                 <select class="option" [(ngModel)]="selectedTask.priority">
-                  <option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</option>
+                  <option *ngFor="let p of priorityOptions" >{{ p }}</option>
                 </select>
               </div>
             </div>
@@ -87,7 +90,7 @@
     </div>
 
     </div>
-    </div>
+
   
 
 

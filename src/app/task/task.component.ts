@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, filter, map, toArray } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, iif, map, Observable, switchMap, toArray } from 'rxjs';
 
 @Component({
   selector: 'app-task',
@@ -33,7 +33,19 @@ updateMessage$ =new BehaviorSubject<string>('');
 checked$ = new BehaviorSubject<number[]>([]);
 
 currenttask$= new BehaviorSubject<{ id: number, task: string, description: string, date: string, priority: string }[]>([]);
-  
+  condition$= new BehaviorSubject<boolean>(true)
+
+
+  done$ =new BehaviorSubject<string>('')
+List$: Observable<any[]> = this.condition$.pipe(
+  switchMap(condition =>
+    iif(
+      () => condition,
+      this.tasks$,
+      this.currenttask$
+    )
+  )
+);
 
 
 
@@ -48,6 +60,23 @@ constructor() {
       const sortedTasks=this.sortTasksByDate(this.tasks$.value)
       this.tasks$.next(sortedTasks)
 console.log('after',this.tasks$.value);
+
+
+const today=new Date()
+
+const tasks= this.tasks$.value.map(task=>{
+  const taskDate= new Date(task.date)
+if(taskDate<today){
+
+  return {...task,past:true}
+   
+}
+else{
+  return {...task,past:false}
+}
+})
+this.tasks$.next(tasks)
+
   }
 
   generateRandomId() {
@@ -113,7 +142,7 @@ console.log('after',this.tasks$.value);
     
 
     if (!updatedTask.task ) {
-      this.updateMessage$.next('Please fill in all fields');
+      this.updateMessage$.next('Please fill name of task');
       return;
     
     
@@ -177,12 +206,26 @@ toggleCheck(id:number) {
 
 
 }
-  doneBtn(){
-    console.log
-    (this.checked$.value)
-  }
+doneBtn() {
+  const checkedIndexes = this.checked$.value;
+  const currentTasks = this.tasks$.value;
+
+  const doneTasks = currentTasks.map((task, index) => {
+    if (checkedIndexes.includes(index)) {
+      return { ...task, done: true }; 
+
+    }
+      console.log(task)
+
+    return task;
+  });
+
+  this.tasks$.next(doneTasks);
+  localStorage.setItem('tasks',JSON.stringify(doneTasks))
+}
 
   
+
 
   remove(){
 
@@ -212,7 +255,9 @@ toggleCheck(id:number) {
 
 
   }
-
+get currentList() {
+  return this.condition$ ? this.tasks$ : this.currenttask$;
+}
 
   loadStorage()
 {
@@ -222,43 +267,19 @@ toggleCheck(id:number) {
     }
 }
   searchTask(){
+    
   
 const items= this.tasks$.value
 const foundItem = items.filter(item => {
   return item.task.includes(this.search);
 });
 
-  console.log(foundItem)
-
-
+this.condition$.next(false)
 
 this.currenttask$.next(foundItem)
-console.log('curr',this.currenttask$.value)
-const searchedItem= this.currenttask$.value
 
-if(!this.tasks$.value.includes(searchedItem[0] )){
-console.log('ko có')
-      this.loadStorage()
-
-}
-else if(!this.search){
-
-  console.log('ko co chứ')
-  this.loadStorage()
-}
-else{    
-    this.loadStorage()
-
-    this.tasks$.next([...this.tasks$.value])
-
-
-  
-
-
-} 
-
-
-
+console.log(this.currenttask$.value)
+// this.tasks$.next(foundItem)
 
 
 // if(!this.search ){

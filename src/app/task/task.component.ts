@@ -250,7 +250,7 @@ doneBtn() {
 
 // this.tasks$.value.forEach((task, index) => {
 //   console.log(task)
-//   console.log('Index:', index); // sẽ in ra 0, 1, 2, 3, 4
+//   console.log('Index:', index);
 // });  
 
 

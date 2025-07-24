@@ -44,25 +44,24 @@
 
 
      <div      [ngClass]="{
-       'done-task': item.done,
-       'overdue-task':item.past && !item.done
+       'done-task': item.done
      }"  class="task_item">
         <div class="taskInfo"  >
     <div class="task_name">
-            <input class="checkboxInput  checked"  (click)="toggleCheck(i)" type="checkbox" />
+            <input class="checkboxInput  checked"  (click)="toggleCheck(item.id)" type="checkbox" />
             <p>{{ item.task }}</p>
     </div>
           <div class="taskDetails">
             <div class="itemBtn">
            <button (click)="openDetail(i)" class="doneBtn">Detail</button>
-              <button class="removeBtn" (click)="removeTask(i)">Remove</button>
+              <button class="removeBtn" (click)="removeTask(item.id)">Remove</button>
             </div>
           </div>
         </div>
 
         <div *ngIf="(openedItemId$ | async) === item.id.toString()" class="detailOpen">
         <div class="detail" *ngIf="selectedTask$ | async as selectedTask">
-            <input type="text" [(ngModel)]="selectedTask.task" class="taskName" />
+            <input type="text" [(ngModel)]="editedTaskName" class="taskName" />
             <p>Description:</p>
             <textarea class="taskDescription" [(ngModel)]="selectedTask.description"></textarea>
 
@@ -94,7 +93,7 @@
   
 
 
-    <div *ngIf="checked$.value.length>0" class="bulk-actions">
+    <div *ngIf="checked$.value.length>0 && tasks$.value.length > 0" class="bulk-actions">
 
     <p>Bulk Action: {{checked$.value.length}}</p>
 

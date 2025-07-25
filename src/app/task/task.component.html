@@ -48,7 +48,7 @@
      }"  class="task_item">
         <div class="taskInfo"  >
     <div class="task_name">
-            <input class="checkboxInput  checked"  (click)="toggleCheck(item.id)" type="checkbox" />
+            <input class="checkboxInput  checked"  [checked]="isChecked(item.id)" (click)="toggleCheck(item.id)" type="checkbox" />
             <p>{{ item.task }}</p>
     </div>
           <div class="taskDetails">

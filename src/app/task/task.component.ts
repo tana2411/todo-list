@@ -95,7 +95,8 @@ export class TaskComponent implements OnInit {
 
     const updatedTasks = [...this.tasks$.value, newTask];
     const sorted = this.sortTasksByDate(updatedTasks);
-    this.tasks$.next(sorted);
+
+    this.updateTasks(sorted);
     this.resetTask();
   }
 
